@@ -16,6 +16,11 @@ public class Graphe {
         this.arguments = arguments;
     }
 
+    /**
+     * Ajoute une contradiction entre deux arguments
+     * @param arg1 le premier argument
+     * @param arg2 le deuxieme argument
+     */
     public void ajouterContradiction(String arg1, String arg2) {
         int i = 0;
         int j = 0;
@@ -48,6 +53,12 @@ public class Graphe {
         return null;
     }
 
+    /**
+     * Verifie si les arguments sont en contradiction
+     * @param argument le premier argument
+     * @param argument1 le deuxieme argument
+     * @return true si les arguments sont en contradiction, false sinon
+     */
     public boolean estContradiction(Argument argument, Argument argument1) {
         int i = 0;
         int j = 0;
