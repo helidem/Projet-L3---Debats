@@ -41,7 +41,7 @@ public class Graphe {
             }
         }
         graphe[i][j] = true;
-        graphe[j][i] = true;
+        // graphe[j][i] = true;
     }
 
     public Argument getArgument(String nom) {
