@@ -10,20 +10,18 @@ import java.util.Scanner;
 public class Appli {
     public static void main(String[] args) {
         System.out.println("====== Debats ======");
-        System.out.print("Entre le nombre d'arguments' : ");
+        System.out.print("Entrez le nom du fichier contenant le graphe :");
         Scanner sc = new Scanner(System.in);
-        int nbArg = sc.nextInt();
 
-        // creation des arguments
-        ArrayList<Argument> arguments = new ArrayList<>();
-        for (int i = 1; i <= nbArg; i++) {
-            arguments.add(new Argument("A" + i));
-        }
+
+
+        // au lieu de creer les arguments, on les recupere depuis le fichier
+        Graphe graphe = new Graphe(sc);
+
 
         // creation du graphe
-        Graphe graphe = new Graphe(arguments);
-        menuAjoutContradiction(sc, graphe);
-        int choix;
+        //Graphe graphe = new Graphe(arguments);
+        //menuAjoutContradiction(sc, graphe);
 
         // tableau des arguments
         ArrayList<Argument> solution = new ArrayList<>();
@@ -33,10 +31,11 @@ public class Appli {
     }
 
     /**
-     * Menu pour ajouter des contradictions
-     * @param sc le scanner
-     * @param graphe le graphe
-     * @param solution la solution
+     * Menu pour ajouter des contradictions, autrement dit, ajouter des arcs
+     *
+     * @param sc        le scanner
+     * @param graphe    le graphe
+     * @param solution  la solution
      * @param nbElement le nombre d'éléments dans la solution
      */
     private static void menuSolution(Scanner sc, Graphe graphe, ArrayList<Argument> solution, int nbElement) {
@@ -102,7 +101,8 @@ public class Appli {
 
     /**
      * Menu pour ajouter des contradictions
-     * @param sc le scanner
+     *
+     * @param sc     le scanner
      * @param graphe le graphe
      */
     private static void menuAjoutContradiction(Scanner sc, Graphe graphe) {
@@ -112,7 +112,7 @@ public class Appli {
             // une contradiction est représentée par une arete entre deux arguments (l'ensemble des contradictions et argumentsest un graphe)
             System.out.println("1. Ajouter une contradiction");
             System.out.println("2. Fin"); // on passe au menu suivant
-            choix = sc.nextInt();
+            choix = verifEntree(sc);
             switch (choix) {
                 case 1:
                     System.out.print("Entre le premier argument : ");
@@ -128,5 +128,13 @@ public class Appli {
                     break;
             }
         } while (choix != 2);
+    }
+
+    private static int verifEntree(Scanner sc) {
+        while (!sc.hasNextInt()) {
+            System.out.print("Erreur : entrez un nombre entier : ");
+            sc.next();
+        }
+        return sc.nextInt();
     }
 }
