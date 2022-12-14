@@ -47,6 +47,7 @@ public class Appli {
             System.out.println("3. Verifier la solution");
             System.out.println("4. Fin");
             System.out.println("5. Verifier si la solution est preferee");
+            System.out.println("6. Afficher les solutions admissibles");
             choix = verifEntreeInt(sc);
 
             switch (choix) {
@@ -93,6 +94,13 @@ public class Appli {
                         System.out.println("Solution preferee");
                     else
                         System.out.println("Solution non preferee");
+                    break;
+                case 6:
+                    ArrayList<ArrayList<Argument>> solutions =   Solver.calculSolutionsAdmissibles(graphe);
+                    for (ArrayList<Argument> sol : solutions) {
+                        Solver.afficherSolution(sol);
+                    }
+
                     break;
                 default:
                     System.out.println("Choix invalide");

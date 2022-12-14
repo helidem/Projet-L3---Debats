@@ -3,23 +3,14 @@ package util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Graphe {
-    private boolean[][] graphe;
-    private ArrayList<Argument> arguments;
 
-    public Graphe(ArrayList<Argument> arguments) {
-        graphe = new boolean[arguments.size()][arguments.size()];
-        for (int i = 0; i < arguments.size(); i++) {
-            for (int j = 0; j < arguments.size(); j++) {
-                graphe[i][j] = false;
-            }
-        }
-        this.arguments = arguments;
-    }
+    private ArrayList<Argument> arguments;
+    private HashMap<Argument, ArrayList<Argument>> listeContradictions; // liste des contradictions de chaque argument
 
     public Graphe(Scanner sc) {
         // on va s'aider de la classe GrepReader pour lire le fichier ligne par ligne
@@ -46,14 +37,12 @@ public class Graphe {
                     String nom = line.substring(9, line.length() - 2);
                     arguments.add(new Argument(nom));
                 }
-                // maintenant on a tous les arguments
-                graphe = new boolean[arguments.size()][arguments.size()];
-                for (int i = 0; i < arguments.size(); i++) {
-                    for (int j = 0; j < arguments.size(); j++) {
-                        graphe[i][j] = false;
-                    }
+                // on va ajouter tout les arguments dans la liste des contradictions en tant que cle
+                listeContradictions = new HashMap<Argument, ArrayList<Argument>>();
+                for (Argument arg : arguments) {
+                    listeContradictions.put(arg, new ArrayList<Argument>());
                 }
-
+                // maintenant on a tous les arguments
                 // on passe aux contradictions
                 reader = new GrepReader(new FileReader(file));
                 while (true) {
@@ -67,13 +56,12 @@ public class Graphe {
                 }
                 break;
 
-            } catch (Exception e) {
+            } catch (FileNotFoundException e) {
                 // le fichier n'existe pas
                 System.out.println("[ERREUR] Le fichier n'existe pas");
                 System.out.println("Entrez le nom du fichier contenant le graphe :");
             }
         }
-
     }
 
     /**
@@ -83,28 +71,18 @@ public class Graphe {
      * @param arg2 le deuxieme argument
      */
     public void ajouterContradiction(String arg1, String arg2) {
-        int i = 0;
-        int j = 0;
-        boolean trouve = false;
-        while (i < arguments.size() && !trouve) {
-            if (arguments.get(i).getNom().equals(arg1)) {
-                trouve = true;
-            } else {
-                i++;
+        ajouterContradictionDansListeContradictions(arg1, arg2);
+    }
+
+    private void ajouterContradictionDansListeContradictions(String argument, String argument1) {
+        for (Argument arg : listeContradictions.keySet()) {
+            if (arg.getNom().equals(argument)) {
+                for (Argument arg1 : arguments) {
+                    if (arg1.getNom().equals(argument1)) {
+                        listeContradictions.get(arg).add(arg1);
+                    }
+                }
             }
-        }
-        trouve = false;
-        while (j < arguments.size() && !trouve) {
-            if (arguments.get(j).getNom().equals(arg2)) {
-                trouve = true;
-            } else {
-                j++;
-            }
-        }
-        if (i == arguments.size() || j == arguments.size()) {
-            System.out.println("Erreur : argument non trouvé");
-        } else {
-            graphe[i][j] = true;
         }
     }
 
@@ -120,33 +98,19 @@ public class Graphe {
     /**
      * Verifie si les arguments sont en contradiction
      *
-     * @param argument  le premier argument
-     * @param argument1 le deuxieme argument
+     * @param A  le premier argument
+     * @param B le deuxieme argument
      * @return true si les arguments sont en contradiction, false sinon
      */
-    public boolean estContradiction(Argument argument, Argument argument1) {
-        int i = 0;
-        int j = 0;
-        boolean trouve = false;
-        while (i < arguments.size() && !trouve) {
-            if (arguments.get(i).equals(argument)) {
-                trouve = true;
-            } else {
-                i++;
-            }
-        }
-        trouve = false;
-        while (j < arguments.size() && !trouve) {
-            if (arguments.get(j).equals(argument1)) {
-                trouve = true;
-            } else {
-                j++;
-            }
-        }
-        return graphe[i][j];
+    public boolean AcontreditB(Argument A, Argument B) {
+        return listeContradictions.get(A).contains(B);
     }
 
     public ArrayList<Argument> getArguments() {
         return arguments;
+    }
+
+    public HashMap<Argument, ArrayList<Argument>> getListeContradictions() {
+        return listeContradictions;
     }
 }
