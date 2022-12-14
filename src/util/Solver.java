@@ -1,6 +1,7 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Solver {
 
@@ -137,21 +138,55 @@ public class Solver {
      * @return la liste des ensemble de solutions admissibles
      */
     public static ArrayList<ArrayList<Argument>> calculSolutionsAdmissibles(Graphe graphe) {
-        ArrayList<ArrayList<Argument>> solutions = new ArrayList<ArrayList<Argument>>();
-        ArrayList<Argument> solution = new ArrayList<Argument>();
-        calculSolutionsAdmissiblesRecursif(graphe, solution, solutions);
+        ArrayList<ArrayList<Argument>> solutions = new ArrayList<>();
+        ArrayList<ArrayList<Argument>> possibilites;
+        possibilites = calculToutesCombinaisonsPossibles(graphe);
+        for (ArrayList<Argument> solution : possibilites) {
+            calculSolutionsAdmissiblesRecursif(graphe, solution, solutions);
+        }
         return solutions;
     }
 
     private static void calculSolutionsAdmissiblesRecursif(Graphe graphe, ArrayList<Argument> solution, ArrayList<ArrayList<Argument>> solutions) {
-        if (verifierSolutionAdmissible(graphe, solution)) {
-            solutions.add(solution);
+        // les ensemble de solutions admissibles doivent êtres unique, {A, C} et {C, A} sont la même solution
+        // pour vérifier cela on trie les arguments de la solution et on vérifie si la solution existe déjà
+        Collections.sort(solution);
+        if (!solutions.contains(solution)) {
+            if (verifierSolutionAdmissible(graphe, solution)) {
+                solutions.add(new ArrayList<Argument>(solution));
+                ArrayList<Argument> arguments = graphe.getArguments();
+                for (Argument argument : arguments) {
+                    if (!estDansSolution(argument, solution)) {
+                        solution.add(argument);
+                        calculSolutionsAdmissiblesRecursif(graphe, solution, solutions);
+                        retirerArgument(argument, solution);
+                    }
+                }
+            }
         }
-        for (Argument arg : graphe.getArguments()) {
-            if (!estDansSolution(arg, solution)) {
-                ArrayList<Argument> solutionTemp = new ArrayList<Argument>(solution);
-                solutionTemp.add(arg);
-                calculSolutionsAdmissiblesRecursif(graphe, solutionTemp, solutions);
+    }
+
+    public static ArrayList<ArrayList<Argument>> calculToutesCombinaisonsPossibles(Graphe graphe) {
+        ArrayList<ArrayList<Argument>> solutions = new ArrayList<ArrayList<Argument>>();
+        ArrayList<Argument> solution = new ArrayList<Argument>();
+        calculToutesCombinaisonsPossiblesRecursif(graphe, solution, solutions);
+        System.out.println("Nombre de solutions : " + solutions.size());
+        return solutions;
+    }
+
+    private static void calculToutesCombinaisonsPossiblesRecursif(Graphe graphe, ArrayList<Argument> solution, ArrayList<ArrayList<Argument>> solutions) {
+        // les ensemble de solutions admissibles doivent êtres unique, {A, C} et {C, A} sont la même solution
+        // pour vérifier cela on trie les arguments de la solution et on vérifie si la solution existe déjà
+        Collections.sort(solution);
+        if (!solutions.contains(solution)) {
+            solutions.add(new ArrayList<Argument>(solution));
+            ArrayList<Argument> arguments = graphe.getArguments();
+            for (Argument argument : arguments) {
+                if (!estDansSolution(argument, solution)) {
+                    solution.add(argument);
+                    calculToutesCombinaisonsPossiblesRecursif(graphe, solution, solutions);
+                    retirerArgument(argument, solution);
+                }
             }
         }
     }
