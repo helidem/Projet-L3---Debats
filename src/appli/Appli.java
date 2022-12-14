@@ -25,8 +25,7 @@ public class Appli {
 
         // tableau des arguments
         ArrayList<Argument> solution = new ArrayList<>();
-        int nbElement = 0;
-        menuSolution(sc, graphe, solution, nbElement);
+        menuSolution(sc, graphe, solution);
 
     }
 
@@ -36,9 +35,8 @@ public class Appli {
      * @param sc        le scanner
      * @param graphe    le graphe
      * @param solution  la solution
-     * @param nbElement le nombre d'éléments dans la solution
      */
-    private static void menuSolution(Scanner sc, Graphe graphe, ArrayList<Argument> solution, int nbElement) {
+    private static void menuSolution(Scanner sc, Graphe graphe, ArrayList<Argument> solution) {
         int choix;
         do {
             // ajout des arguments dans l'ensemble des solutions
@@ -48,7 +46,8 @@ public class Appli {
             // verifier si l'ensemble des solutions est une solution admissible
             System.out.println("3. Verifier la solution");
             System.out.println("4. Fin");
-            choix = sc.nextInt();
+            System.out.println("5. Verifier si la solution est preferee");
+            choix = verifEntreeInt(sc);
 
             switch (choix) {
                 case 1:
@@ -56,11 +55,10 @@ public class Appli {
                     String nom = sc.next();
                     Argument arg = graphe.getArgument(nom);
                     if (arg != null) {
-                        if (Solver.estDansSolution(arg, solution, nbElement)) {
+                        if (Solver.estDansSolution(arg, solution)) {
                             System.out.println("L'argument est deja dans la solution");
                         } else {
-                            solution.add(nbElement, arg);
-                            nbElement++;
+                            solution.add(arg);
                         }
                     } else {
                         System.out.println("Argument inexistant");
@@ -71,9 +69,9 @@ public class Appli {
                     nom = sc.next();
                     arg = graphe.getArgument(nom);
                     if (arg != null) {
-                        if (Solver.estDansSolution(arg, solution, nbElement)) {
-                            Solver.retirerArgument(arg, solution, nbElement);
-                            nbElement--;
+                        if (Solver.estDansSolution(arg, solution)) {
+                            Solver.retirerArgument(arg, solution);
+
                         } else {
                             System.out.println("L'argument n'est pas dans la solution");
                         }
@@ -83,12 +81,18 @@ public class Appli {
                     }
                     break;
                 case 3:
-                    if (Solver.verifierSolution(graphe, solution, nbElement))
+                    if (Solver.verifierSolutionAdmissible(graphe, solution))
                         System.out.println("Solution admissible");
                     else
                         System.out.println("Solution non admissible");
                 case 4:
-                    Solver.afficherSolution(solution, nbElement);
+                    Solver.afficherSolution(solution);
+                    break;
+                case 5:
+                    if (Solver.verifierSolutionPreferee(graphe, solution))
+                        System.out.println("Solution preferee");
+                    else
+                        System.out.println("Solution non preferee");
                     break;
                 default:
                     System.out.println("Choix invalide");
@@ -112,7 +116,7 @@ public class Appli {
             // une contradiction est représentée par une arete entre deux arguments (l'ensemble des contradictions et argumentsest un graphe)
             System.out.println("1. Ajouter une contradiction");
             System.out.println("2. Fin"); // on passe au menu suivant
-            choix = verifEntree(sc);
+            choix = verifEntreeInt(sc);
             switch (choix) {
                 case 1:
                     System.out.print("Entre le premier argument : ");
@@ -130,9 +134,9 @@ public class Appli {
         } while (choix != 2);
     }
 
-    private static int verifEntree(Scanner sc) {
+    private static int verifEntreeInt(Scanner sc) {
         while (!sc.hasNextInt()) {
-            System.out.print("Erreur : entrez un nombre entier : ");
+            System.out.println("Erreur : entrez un nombre entier");
             sc.next();
         }
         return sc.nextInt();
