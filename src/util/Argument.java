@@ -2,6 +2,7 @@ package util;
 
 public class Argument implements Comparable {
     private String nom;
+
     public Argument(String s) {
         this.nom = s;
     }

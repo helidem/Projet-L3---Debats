@@ -14,7 +14,6 @@ public class Appli {
         Scanner sc = new Scanner(System.in);
 
 
-
         // au lieu de creer les arguments, on les recupere depuis le fichier
         Graphe graphe = new Graphe(sc);
 
@@ -32,9 +31,9 @@ public class Appli {
     /**
      * Menu pour ajouter des contradictions, autrement dit, ajouter des arcs
      *
-     * @param sc        le scanner
-     * @param graphe    le graphe
-     * @param solution  la solution
+     * @param sc       le scanner
+     * @param graphe   le graphe
+     * @param solution la solution
      */
     private static void menuSolution(Scanner sc, Graphe graphe, ArrayList<Argument> solution) {
         int choix;
@@ -48,7 +47,9 @@ public class Appli {
             System.out.println("4. Fin");
             System.out.println("5. Verifier si la solution est preferee");
             System.out.println("6. Afficher les solutions admissibles");
+            System.out.println("7. Afficher les solutions preferees");
             choix = verifEntreeInt(sc);
+            Solver solver = new Solver(graphe);
 
             switch (choix) {
                 case 1:
@@ -56,7 +57,7 @@ public class Appli {
                     String nom = sc.next();
                     Argument arg = graphe.getArgument(nom);
                     if (arg != null) {
-                        if (Solver.estDansSolution(arg, solution)) {
+                        if (solution.contains(arg)) {
                             System.out.println("L'argument est deja dans la solution");
                         } else {
                             solution.add(arg);
@@ -70,9 +71,8 @@ public class Appli {
                     nom = sc.next();
                     arg = graphe.getArgument(nom);
                     if (arg != null) {
-                        if (Solver.estDansSolution(arg, solution)) {
-                            Solver.retirerArgument(arg, solution);
-
+                        if (solution.contains(arg)) {
+                            solver.retirerArgument(arg, solution);
                         } else {
                             System.out.println("L'argument n'est pas dans la solution");
                         }
@@ -82,25 +82,31 @@ public class Appli {
                     }
                     break;
                 case 3:
-                    if (Solver.verifierSolutionAdmissible(graphe, solution))
+                    if (solver.estSolutionAdmissible(graphe, solution))
                         System.out.println("Solution admissible");
                     else
                         System.out.println("Solution non admissible");
                 case 4:
-                    Solver.afficherSolution(solution);
+                    solver.afficherSolution(solution);
                     break;
                 case 5:
-                    if (Solver.verifierSolutionPreferee(graphe, solution))
+                    if (solver.estSolutionPreferee(graphe, solution))
                         System.out.println("Solution preferee");
                     else
                         System.out.println("Solution non preferee");
                     break;
                 case 6:
-                    ArrayList<ArrayList<Argument>> solutions =   Solver.calculSolutionsAdmissibles(graphe);
-                    for (ArrayList<Argument> sol : solutions) {
-                        Solver.afficherSolution(sol);
-                    }
 
+                    for (ArrayList<Argument> sol : solver.getLaListeDeToutesLesSolutionsAdmissibles()) {
+                        solver.afficherSolution(sol);
+                    }
+                    break;
+                case 7:
+                    System.out.println("Toutes les solutions preferees");
+                    ArrayList<ArrayList<Argument>> solutionsPreferees = solver.calculToutesLesSolutionsPreferees(graphe);
+                    for (ArrayList<Argument> sol : solutionsPreferees) {
+                        solver.afficherSolution(sol);
+                    }
                     break;
                 default:
                     System.out.println("Choix invalide");

@@ -1,15 +1,6 @@
 argument(A).
 argument(B).
 argument(C).
-argument(D).
-argument(E).
-argument(F).
-argument(G).
 contradiction(A,B).
+contradiction(B,A).
 contradiction(B,C).
-contradiction(C,D).
-contradiction(D,C).
-contradiction(D,E).
-contradiction(E,F).
-contradiction(F,G).
-contradiction(G,E).

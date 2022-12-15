@@ -98,7 +98,7 @@ public class Graphe {
     /**
      * Verifie si les arguments sont en contradiction
      *
-     * @param A  le premier argument
+     * @param A le premier argument
      * @param B le deuxieme argument
      * @return true si les arguments sont en contradiction, false sinon
      */
