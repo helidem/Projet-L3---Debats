@@ -1,3 +1,10 @@
+/**
+ * @file src/util/Graphe.java
+ * @brief Classe Graphe qui represente un graphe
+ * @author Youcef MEDILEH
+ * @version 1.0
+ */
+
 package util;
 
 import java.io.File;
@@ -7,22 +14,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+
 public class Graphe {
 
     private ArrayList<Argument> arguments;
     private HashMap<Argument, ArrayList<Argument>> listeContradictions; // liste des contradictions de chaque argument
 
     public Graphe(Scanner sc) {
-        // on va s'aider de la classe GrepReader pour lire le fichier ligne par ligne
-        // le fichier est de la forme :
-        // argument(A).
-        // argument(B).
-        // argument(C).
-        // contradiction(A,B).
-        // contradiction(B,C).
 
-        arguments = new ArrayList<Argument>();
+        arguments = new ArrayList<>();
 
+        initGrapheFile(sc);
+    }
+
+    /**
+     * @param sc le scanner
+     * @brief Initialise le graphe a partir d'un fichier
+     */
+    private void initGrapheFile(Scanner sc) {
         File file;
         while (true) {
             try {
@@ -37,13 +46,12 @@ public class Graphe {
                     String nom = line.substring(9, line.length() - 2);
                     arguments.add(new Argument(nom));
                 }
-                // on va ajouter tout les arguments dans la liste des contradictions en tant que cle
-                listeContradictions = new HashMap<Argument, ArrayList<Argument>>();
+
+                listeContradictions = new HashMap<>();
                 for (Argument arg : arguments) {
-                    listeContradictions.put(arg, new ArrayList<Argument>());
+                    listeContradictions.put(arg, new ArrayList<>());
                 }
-                // maintenant on a tous les arguments
-                // on passe aux contradictions
+
                 reader = new GrepReader(new FileReader(file));
                 while (true) {
                     String line = reader.readLine("contradiction(");
@@ -65,10 +73,9 @@ public class Graphe {
     }
 
     /**
-     * Ajoute une contradiction entre deux arguments
-     *
      * @param arg1 le premier argument
      * @param arg2 le deuxieme argument
+     * @brief Ajoute une contradiction entre deux arguments
      */
     public void ajouterContradiction(String arg1, String arg2) {
         ajouterContradictionDansListeContradictions(arg1, arg2);
@@ -96,11 +103,10 @@ public class Graphe {
     }
 
     /**
-     * Verifie si les arguments sont en contradiction
-     *
      * @param A le premier argument
      * @param B le deuxieme argument
      * @return true si les arguments sont en contradiction, false sinon
+     * @brief Verifie si les arguments sont en contradiction
      */
     public boolean AcontreditB(Argument A, Argument B) {
         return listeContradictions.get(A).contains(B);
@@ -108,9 +114,5 @@ public class Graphe {
 
     public ArrayList<Argument> getArguments() {
         return arguments;
-    }
-
-    public HashMap<Argument, ArrayList<Argument>> getListeContradictions() {
-        return listeContradictions;
     }
 }

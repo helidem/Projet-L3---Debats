@@ -1,3 +1,10 @@
+/**
+ * @file src/util/Argument.java
+ * @brief Classe Argument qui represente un argument
+ * @author Youcef MEDILEH
+ * @version 1.0
+ */
+
 package util;
 
 public class Argument implements Comparable {
@@ -11,7 +18,11 @@ public class Argument implements Comparable {
         return nom;
     }
 
-
+    /**
+     * @brief Compare deux arguments
+     * @param o the object to be compared.
+     * @return
+     */
     @Override
     public int compareTo(Object o) {
         Argument arg = (Argument) o;

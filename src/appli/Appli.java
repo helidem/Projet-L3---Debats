@@ -1,3 +1,10 @@
+/**
+ * @file src\appli\Appli.java
+ * @brief Classe principale de l'application
+ * @author Youcef MEDILEH
+ * @version 1.0
+ */
+
 package appli;
 
 import util.Argument;
@@ -7,33 +14,25 @@ import util.Solver;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+
 public class Appli {
     public static void main(String[] args) {
         System.out.println("====== Debats ======");
         System.out.print("Entrez le nom du fichier contenant le graphe :");
         Scanner sc = new Scanner(System.in);
 
-
-        // au lieu de creer les arguments, on les recupere depuis le fichier
+        // au lieu de creer les arguments, on les récupère depuis le fichier
         Graphe graphe = new Graphe(sc);
 
-
-        // creation du graphe
-        //Graphe graphe = new Graphe(arguments);
-        //menuAjoutContradiction(sc, graphe);
-
-        // tableau des arguments
         ArrayList<Argument> solution = new ArrayList<>();
         menuSolution(sc, graphe, solution);
-
     }
 
     /**
-     * Menu pour ajouter des contradictions, autrement dit, ajouter des arcs
-     *
      * @param sc       le scanner
      * @param graphe   le graphe
      * @param solution la solution
+     * @brief Menu pour ajouter des contradictions, autrement dit, ajouter des arcs
      */
     private static void menuSolution(Scanner sc, Graphe graphe, ArrayList<Argument> solution) {
         int choix;
@@ -72,7 +71,7 @@ public class Appli {
                     arg = graphe.getArgument(nom);
                     if (arg != null) {
                         if (solution.contains(arg)) {
-                            solver.retirerArgument(arg, solution);
+                            solution.remove(arg);
                         } else {
                             System.out.println("L'argument n'est pas dans la solution");
                         }
@@ -118,36 +117,10 @@ public class Appli {
     }
 
     /**
-     * Menu pour ajouter des contradictions
-     *
-     * @param sc     le scanner
-     * @param graphe le graphe
+     * @param sc le scanner
+     * @return l'entree
+     * @brief Verifie si l'entree est un entier
      */
-    private static void menuAjoutContradiction(Scanner sc, Graphe graphe) {
-        int choix;
-        do {
-            // ajout des contradictions
-            // une contradiction est représentée par une arete entre deux arguments (l'ensemble des contradictions et argumentsest un graphe)
-            System.out.println("1. Ajouter une contradiction");
-            System.out.println("2. Fin"); // on passe au menu suivant
-            choix = verifEntreeInt(sc);
-            switch (choix) {
-                case 1:
-                    System.out.print("Entre le premier argument : ");
-                    String arg1 = sc.next();
-                    System.out.print("Entre le deuxieme argument : ");
-                    String arg2 = sc.next();
-                    graphe.ajouterContradiction(arg1, arg2);
-                    break;
-                case 2:
-                    break;
-                default:
-                    System.out.println("Choix invalide");
-                    break;
-            }
-        } while (choix != 2);
-    }
-
     private static int verifEntreeInt(Scanner sc) {
         while (!sc.hasNextInt()) {
             System.out.println("Erreur : entrez un nombre entier");

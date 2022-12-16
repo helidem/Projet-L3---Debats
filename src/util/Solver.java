@@ -1,3 +1,9 @@
+/**
+ * @file src/util/Solver.java
+ * @brief Classe Solver qui permet de resoudre le probleme
+ * @author Youcef MEDILEH
+ */
+
 package util;
 
 import java.util.ArrayList;
@@ -13,24 +19,20 @@ public class Solver {
     }
 
     /**
-     * Verifie si la solution est preferee
-     *
      * @param graphe   le graphe
      * @param solution la solution
      * @return true si la solution est preferee, false sinon
+     * @brief Verifie si la solution est preferee
      */
     public boolean estSolutionPreferee(Graphe graphe, ArrayList<Argument> solution) {
         int nbElements = solution.size();
-        if (nbElements == 0)
-            return false;
-        if (!estSolutionAdmissible(graphe, solution))
-            return false;
+        if (nbElements == 0) return false;
+        if (!estSolutionAdmissible(graphe, solution)) return false;
         else {
-            for (ArrayList<Argument> uneSolutionAdmissible : laListeDeToutesLesSolutionsAdmissibles) {
+            for (ArrayList<Argument> uneSolutionAdmissible : laListeDeToutesLesSolutionsAdmissibles) { // pour chaque solution admissible
                 // on regarde si c'est pas le meme ensemble
                 if (!uneSolutionAdmissible.equals(solution)) {
-                    if (uneSolutionAdmissible.containsAll(solution))
-                        return false;
+                    if (uneSolutionAdmissible.containsAll(solution)) return false;
                 }
             }
         }
@@ -38,16 +40,14 @@ public class Solver {
     }
 
     /**
-     * Verifie si une solution est admissible
-     *
      * @param graphe   le graphe
      * @param solution la solution
      * @return true si la solution est admissible, false sinon
+     * @brief Verifie si une solution est admissible
      */
     public boolean estSolutionAdmissible(Graphe graphe, ArrayList<Argument> solution) {
         // verifier si la solution est vide
-        if (solution.isEmpty())
-            return true;
+        if (solution.isEmpty()) return true;
         else {
             // verifier si les arguments dans la solution ne sont pas en conflit (en contradiction entre eux)
             for (int i = 0; i < solution.size(); i++) {
@@ -84,9 +84,8 @@ public class Solver {
     }
 
     /**
-     * Affiche la solution
-     *
      * @param solution la solution
+     * @brief Affiche la solution
      */
     public void afficherSolution(ArrayList<Argument> solution) {
         int nbElement = solution.size();
@@ -101,79 +100,82 @@ public class Solver {
     }
 
     /**
-     * Retire un argument de la solution
-     *
-     * @param arg      l'argument à retirer
-     * @param solution la solution
-     */
-    public void retirerArgument(Argument arg, ArrayList<Argument> solution) {
-        for (Argument argument : solution) {
-            if (argument.getNom().equals(arg.getNom())) {
-                solution.remove(argument);
-                break;
-            }
-        }
-    }
-
-    /**
-     * Calcule toutes les solutions admissibles possibles dans le graphe
-     *
      * @param graphe le graphe
      * @return la liste des ensemble de solutions admissibles
+     * @brief Calcule toutes les solutions admissibles possibles dans le graphe
      */
     public ArrayList<ArrayList<Argument>> calculToutesLesSolutionsAdmissibles(Graphe graphe) {
-        ArrayList<ArrayList<Argument>> solutions = new ArrayList<>();
-        ArrayList<ArrayList<Argument>> possibilites;
-        possibilites = calculToutesCombinaisonsPossibles(graphe);
-        for (ArrayList<Argument> solution : possibilites) {
-            calculToutesLesSolutionsAdmissiblesRecursif(graphe, solution, solutions);
+        ArrayList<ArrayList<Argument>> solutions = new ArrayList<>(); // la liste des solutions admissibles
+        ArrayList<ArrayList<Argument>> possibilites; // la liste des possibilites
+        possibilites = calculToutesCombinaisonsPossibles(graphe); // on calcule toutes les combinaisons possibles
+        for (ArrayList<Argument> solution : possibilites) { // pour chaque solution
+            calculToutesLesSolutionsAdmissiblesRecursif(graphe, solution, solutions); // on calcule toutes les solutions admissibles
         }
         return solutions;
     }
 
+    /**
+     * @param graphe    le graphe
+     * @param solution  la solution
+     * @param solutions la liste des solutions
+     * @brief Calcule toutes les solutions admissibles possibles dans le graphe (recursif)
+     */
     private void calculToutesLesSolutionsAdmissiblesRecursif(Graphe graphe, ArrayList<Argument> solution, ArrayList<ArrayList<Argument>> solutions) {
-        // les ensemble de solutions admissibles doivent êtres unique, {A, C} et {C, A} sont la même solution
-        // pour vérifier cela on trie les arguments de la solution et on vérifie si la solution existe déjà
-        Collections.sort(solution);
-        if (!solutions.contains(solution)) {
-            if (estSolutionAdmissible(graphe, solution)) {
-                solutions.add(new ArrayList<Argument>(solution));
-                ArrayList<Argument> arguments = graphe.getArguments();
-                for (Argument argument : arguments) {
-                    if (!solution.contains(argument)) {
-                        solution.add(argument);
-                        calculToutesLesSolutionsAdmissiblesRecursif(graphe, solution, solutions);
-                        retirerArgument(argument, solution);
+        Collections.sort(solution); // trier la solution pour eviter les doublons
+        if (!solutions.contains(solution)) { // si la solution n'est pas deja dans la liste des solutions
+            if (estSolutionAdmissible(graphe, solution)) { // si la solution est admissible
+                solutions.add(new ArrayList<Argument>(solution)); // on ajoute la solution a la liste des solutions
+                ArrayList<Argument> arguments = graphe.getArguments(); // on recupere la liste des arguments du graphe
+                for (Argument argument : arguments) { // pour chaque argument du graphe
+                    if (!solution.contains(argument)) { // si l'argument n'est pas dans la solution
+                        solution.add(argument); // on ajoute l'argument a la solution
+                        calculToutesLesSolutionsAdmissiblesRecursif(graphe, solution, solutions); // on appelle la fonction recursivement
+                        solution.remove(argument); // on retire l'argument de la solution
                     }
                 }
             }
         }
     }
 
+    /**
+     * @param graphe le graphe
+     * @return la liste des ensemble de combinations possibles
+     * @brief Calcule toutes les combinaisons possibles dans le graphe
+     */
     public ArrayList<ArrayList<Argument>> calculToutesCombinaisonsPossibles(Graphe graphe) {
-        ArrayList<ArrayList<Argument>> solutions = new ArrayList<ArrayList<Argument>>();
-        ArrayList<Argument> solution = new ArrayList<Argument>();
-        calculToutesCombinaisonsPossiblesRecursif(graphe, solution, solutions);
-        return solutions;
+        ArrayList<ArrayList<Argument>> combinaisons = new ArrayList<ArrayList<Argument>>();
+        ArrayList<Argument> combinaison = new ArrayList<Argument>();
+        calculToutesCombinaisonsPossiblesRecursif(graphe, combinaison, combinaisons);
+        return combinaisons;
     }
 
-    private void calculToutesCombinaisonsPossiblesRecursif(Graphe graphe, ArrayList<Argument> solution, ArrayList<ArrayList<Argument>> solutions) {
-        // les ensemble de solutions admissibles doivent êtres unique, {A, C} et {C, A} sont la même solution
-        // pour vérifier cela on trie les arguments de la solution et on vérifie si la solution existe déjà
-        Collections.sort(solution);
-        if (!solutions.contains(solution)) {
-            solutions.add(new ArrayList<Argument>(solution));
+    /**
+     * @param graphe       le graphe
+     * @param combinaison  la combinaison
+     * @param combinaisons la liste des combinaisons
+     * @brief Calcule toutes les combinaisons possibles dans le graphe (fonction recursive)
+     */
+    private void calculToutesCombinaisonsPossiblesRecursif(Graphe graphe, ArrayList<Argument> combinaison, ArrayList<ArrayList<Argument>> combinaisons) {
+        Collections.sort(combinaison);
+        if (!combinaisons.contains(combinaison)) {
+            combinaisons.add(new ArrayList<Argument>(combinaison));
             ArrayList<Argument> arguments = graphe.getArguments();
             for (Argument argument : arguments) {
-                if (!solution.contains(argument)) {
-                    solution.add(argument);
-                    calculToutesCombinaisonsPossiblesRecursif(graphe, solution, solutions);
-                    retirerArgument(argument, solution);
+                if (!combinaison.contains(argument)) {
+                    combinaison.add(argument);
+                    calculToutesCombinaisonsPossiblesRecursif(graphe, combinaison, combinaisons);
+                    combinaison.remove(argument);
                 }
             }
         }
     }
 
+
+    /**
+     * @param graphe le graphe
+     * @return la liste des ensemble de solutions preferees
+     * @brief Calcule toutes les solutions preferees possibles dans le graphe
+     */
     public ArrayList<ArrayList<Argument>> calculToutesLesSolutionsPreferees(Graphe graphe) {
         // pour chaque solution admissible on vérifie si elle est préférée
         ArrayList<ArrayList<Argument>> toutesLesSolutionsAdmissibles = calculToutesLesSolutionsAdmissibles(graphe);

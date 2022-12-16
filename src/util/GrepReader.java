@@ -1,15 +1,12 @@
 package util;
+
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.Reader;
 
 /**
  * Cette classe permet de lire un fichier ligne par ligne. Elle permet de trier selon un motif.
  */
 public class GrepReader extends BufferedReader {
-    public GrepReader(Reader in, int sz) {
-        super(in, sz);
-    }
 
     public GrepReader(Reader in) {
         super(in);
