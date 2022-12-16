@@ -36,19 +36,23 @@ public class Appli {
      */
     private static void menuSolution(Scanner sc, Graphe graphe, ArrayList<Argument> solution) {
         int choix;
+        Solver solver = new Solver(graphe);
         do {
+            System.out.println("========== MENU SOLUTIONS ==========");
+            System.out.print("Actuellement, la solution est : ");
+            solver.afficherSolution(solution);
             // ajout des arguments dans l'ensemble des solutions
             System.out.println("1. Ajouter un argument");
             // retirer un argument de l'ensemble des solutions
             System.out.println("2. Retirer un argument");
             // verifier si l'ensemble des solutions est une solution admissible
-            System.out.println("3. Verifier la solution");
-            System.out.println("4. Fin");
-            System.out.println("5. Verifier si la solution est preferee");
-            System.out.println("6. Afficher les solutions admissibles");
-            System.out.println("7. Afficher les solutions preferees");
+            System.out.println("3. Verifier la solution est admissible");
+            System.out.println("4. Verifier si la solution est preferee");
+            System.out.println("5. Afficher les solutions admissibles");
+            System.out.println("6. Afficher les solutions preferees");
+            System.out.println("7. Fin (affiche la solution actuelle)");
             choix = verifEntreeInt(sc);
-            Solver solver = new Solver(graphe);
+
 
             switch (choix) {
                 case 1:
@@ -57,12 +61,12 @@ public class Appli {
                     Argument arg = graphe.getArgument(nom);
                     if (arg != null) {
                         if (solution.contains(arg)) {
-                            System.out.println("L'argument est deja dans la solution");
+                            System.out.println("[ERREUR] L'argument est deja dans la solution");
                         } else {
                             solution.add(arg);
                         }
                     } else {
-                        System.out.println("Argument inexistant");
+                        System.out.println("[ERREUR] Argument inexistant");
                     }
                     break;
                 case 2:
@@ -73,47 +77,50 @@ public class Appli {
                         if (solution.contains(arg)) {
                             solution.remove(arg);
                         } else {
-                            System.out.println("L'argument n'est pas dans la solution");
+                            System.out.println("[ERREUR] L'argument n'est pas dans la solution");
                         }
 
                     } else {
-                        System.out.println("Argument inexistant");
+                        System.out.println("[ERREUR] Argument inexistant");
                     }
                     break;
                 case 3:
                     if (solver.estSolutionAdmissible(graphe, solution))
-                        System.out.println("Solution admissible");
-                    else
-                        System.out.println("Solution non admissible");
+                        System.out.println("La solution est admissible");
+                    else System.out.println("La solution n'est pas admissible");
+
                 case 4:
-                    solver.afficherSolution(solution);
+                    if (solver.estSolutionPreferee(graphe, solution)) {
+                        System.out.println("La solution proposée est preferee");
+                        solver.afficherSolution(solution);
+                    } else {
+                        System.out.println("La solution proposée n'est pas preferee");
+                        solver.afficherSolution(solution);
+                    }
                     break;
                 case 5:
-                    if (solver.estSolutionPreferee(graphe, solution))
-                        System.out.println("Solution preferee");
-                    else
-                        System.out.println("Solution non preferee");
-                    break;
-                case 6:
-
+                    System.out.println("====== Voici la liste de toutes les solutions admissibles : ======");
                     for (ArrayList<Argument> sol : solver.getLaListeDeToutesLesSolutionsAdmissibles()) {
                         solver.afficherSolution(sol);
                     }
                     break;
-                case 7:
-                    System.out.println("Toutes les solutions preferees");
+                case 6:
+                    System.out.println("====== Voici la liste de toutes les solutions preferees : ======");
                     ArrayList<ArrayList<Argument>> solutionsPreferees = solver.calculToutesLesSolutionsPreferees(graphe);
                     for (ArrayList<Argument> sol : solutionsPreferees) {
                         solver.afficherSolution(sol);
                     }
                     break;
+                case 7:
+                    System.out.println("Fin");
+                    System.out.println("====== Voici la solution finale : ======");
+                    solver.afficherSolution(solution);
+                    break;
                 default:
-                    System.out.println("Choix invalide");
+                    System.out.println("[ERREUR] Choix invalide");
                     break;
             }
-
-
-        } while (choix != 4);
+        } while (choix != 7);
     }
 
     /**

@@ -96,7 +96,7 @@ public class Solver {
                 System.out.print(", ");
             }
         }
-        System.out.println("}\n");
+        System.out.println("}");
     }
 
     /**
