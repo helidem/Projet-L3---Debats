@@ -53,15 +53,14 @@ public class Graphe {
                 }
 
                 listeContradictions = new HashMap<>();
-
+                for (Argument arg : arguments) {
+                    listeContradictions.put(arg, new ArrayList<>());
+                }
 
                 reader = new GrepReader(new FileReader(file));
                 while (true) {
                     String line = reader.readLine("contradiction(");
                     if (line == null) {
-                        if (listeContradictions.size() == 0) {
-                            throw new ExceptionFichier("[ERREUR] Le fichier ne contient pas de contradictions");
-                        }
                         break;
                     }
                     String nom1 = null;
@@ -73,12 +72,10 @@ public class Graphe {
                         throw new ExceptionFichier("[ERREUR] Probleme dans le fichier, veuillez verifier que les contradictions sont bien ecrites");
                     }
                     // verifier si les arguments existent aussi
-                    if (!verifierArgument(nom1) || !verifierArgument(nom2) || nom1.equals(nom2) || !argumentEstDansGraphe(nom1) || !argumentEstDansGraphe(nom2)){
+                    if (!verifierArgument(nom1) || !verifierArgument(nom2) || nom1.equals(nom2) || !argumentEstDansGraphe(nom1) || !argumentEstDansGraphe(nom2)) {
                         throw new ExceptionFichier("[ERREUR] Probleme dans le fichier, veuillez verifier que les contradictions sont bien ecrites");
                     }
-                    for (Argument arg : arguments) {
-                        listeContradictions.put(arg, new ArrayList<>());
-                    }
+
                     ajouterContradiction(nom1, nom2);
                 }
                 break;
@@ -96,8 +93,8 @@ public class Graphe {
     }
 
     private boolean argumentEstDansGraphe(String nom1) {
-        for(Argument arg : arguments){
-            if(arg.getNom().equals(nom1))
+        for (Argument arg : arguments) {
+            if (arg.getNom().equals(nom1))
                 return true;
         }
         return false;
