@@ -1,4 +1,4 @@
-#Projet Debats L3                                                    
+# Projet Debats L3                                                    
 Repo du projet de programmation avancée en Java, L3 informatique 2022-2023
 
 Réalisé par : Youcef MEDILEH, Jordan MALCLES et Alexis BANG
