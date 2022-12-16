@@ -1,3 +1,6 @@
 argument(A).
 argument(B).
+argument(C).
 contradiction(A,B).
+contradiction(B,C).
+contradiction(B,A).

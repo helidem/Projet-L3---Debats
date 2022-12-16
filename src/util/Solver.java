@@ -6,6 +6,9 @@
 
 package util;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -190,5 +193,81 @@ public class Solver {
 
     public ArrayList<ArrayList<Argument>> getLaListeDeToutesLesSolutionsAdmissibles() {
         return laListeDeToutesLesSolutionsAdmissibles;
+    }
+
+    public void sauvegarderSolution(ArrayList<Argument> solution, String nomFichier) {
+        try {
+            FileWriter fw = new FileWriter(nomFichier);
+            BufferedWriter bw = new BufferedWriter(fw);
+            int nbElement = solution.size();
+            bw.write("Solution : {");
+            for (int i = 0; i < nbElement; i++) {
+                bw.write(solution.get(i).getNom());
+                if (i != nbElement - 1) {
+                    bw.write(", ");
+                }
+            }
+            bw.write("}");
+            bw.close();
+        } catch (IOException e) {
+            System.out.println("[ERREUR] Impossible de sauvegarder la solution");
+        }
+    }
+
+    public void sauvegarderSolutionsAdmissibles(String nomFichier) {
+        try {
+            FileWriter fw = new FileWriter(nomFichier);
+            BufferedWriter bw = new BufferedWriter(fw);
+            int nbElement = laListeDeToutesLesSolutionsAdmissibles.size();
+            bw.write("Solutions admissibles : {");
+            for (int i = 0; i < nbElement; i++) {
+                bw.write("{");
+                ArrayList<Argument> solution = laListeDeToutesLesSolutionsAdmissibles.get(i);
+                int nbElementSolution = solution.size();
+                for (int j = 0; j < nbElementSolution; j++) {
+                    bw.write(solution.get(j).getNom());
+                    if (j != nbElementSolution - 1) {
+                        bw.write(", ");
+                    }
+                }
+                bw.write("}");
+                if (i != nbElement - 1) {
+                    bw.write(", ");
+                }
+            }
+            bw.write("}");
+            bw.close();
+        } catch (IOException e) {
+            System.out.println("[ERREUR] Impossible de sauvegarder les solutions admissibles");
+        }
+    }
+
+    public void sauvegarderSolutionsPreferees(String nomFichier) {
+        try {
+            FileWriter fw = new FileWriter(nomFichier);
+            BufferedWriter bw = new BufferedWriter(fw);
+            ArrayList<ArrayList<Argument>> laListeDeToutesLesSolutionsPreferees = calculToutesLesSolutionsPreferees(graphe);
+            int nbElement = laListeDeToutesLesSolutionsPreferees.size();
+            bw.write("Solutions preferees : {");
+            for (int i = 0; i < nbElement; i++) {
+                bw.write("{");
+                ArrayList<Argument> solution = laListeDeToutesLesSolutionsPreferees.get(i);
+                int nbElementSolution = solution.size();
+                for (int j = 0; j < nbElementSolution; j++) {
+                    bw.write(solution.get(j).getNom());
+                    if (j != nbElementSolution - 1) {
+                        bw.write(", ");
+                    }
+                }
+                bw.write("}");
+                if (i != nbElement - 1) {
+                    bw.write(", ");
+                }
+            }
+            bw.write("}");
+            bw.close();
+        } catch (IOException e) {
+            System.out.println("[ERREUR] Impossible de sauvegarder les solutions preferees");
+        }
     }
 }

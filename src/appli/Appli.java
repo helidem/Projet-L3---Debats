@@ -42,15 +42,19 @@ public class Appli {
             System.out.print("Actuellement, la solution est : ");
             solver.afficherSolution(solution);
             // ajout des arguments dans l'ensemble des solutions
-            System.out.println("1. Ajouter un argument");
+            System.out.println("1. Ajouter manuellement un argument dans la solution");
             // retirer un argument de l'ensemble des solutions
-            System.out.println("2. Retirer un argument");
+            System.out.println("2. Retirer manuellement un argument de la solution");
             // verifier si l'ensemble des solutions est une solution admissible
-            System.out.println("3. Verifier la solution est admissible");
+            System.out.println("3. Verifier si la solution est admissible");
             System.out.println("4. Verifier si la solution est preferee");
             System.out.println("5. Afficher les solutions admissibles");
             System.out.println("6. Afficher les solutions preferees");
             System.out.println("7. Fin (affiche la solution actuelle)");
+            System.out.println("8. Sauvegarder la solution actuelle");
+            System.out.println("9 Sauvegarder les solutions admissibles");
+            System.out.println("10 Sauvegarder les solutions preferees");
+            System.out.print("Votre choix : ");
             choix = verifEntreeInt(sc);
 
 
@@ -88,7 +92,7 @@ public class Appli {
                     if (solver.estSolutionAdmissible(graphe, solution))
                         System.out.println("La solution est admissible");
                     else System.out.println("La solution n'est pas admissible");
-
+                    break;
                 case 4:
                     if (solver.estSolutionPreferee(graphe, solution)) {
                         System.out.println("La solution proposée est preferee");
@@ -115,6 +119,24 @@ public class Appli {
                     System.out.println("Fin");
                     System.out.println("====== Voici la solution finale : ======");
                     solver.afficherSolution(solution);
+                    break;
+                case 8:
+                    System.out.println("====== Sauvegarde de la solution ======");
+                    System.out.print("Entrez le nom du fichier de sauvegarde :");
+                    String nomFichier = sc.next();
+                    solver.sauvegarderSolution(solution, nomFichier);
+                    break;
+                case 9:
+                    System.out.println("====== Sauvegarde des solutions admissibles ======");
+                    System.out.print("Entrez le nom du fichier de sauvegarde :");
+                    nomFichier = sc.next();
+                    solver.sauvegarderSolutionsAdmissibles(nomFichier);
+                    break;
+                case 10:
+                    System.out.println("====== Sauvegarde des solutions preferees ======");
+                    System.out.print("Entrez le nom du fichier de sauvegarde :");
+                    nomFichier = sc.next();
+                    solver.sauvegarderSolutionsPreferees(nomFichier);
                     break;
                 default:
                     System.out.println("[ERREUR] Choix invalide");
